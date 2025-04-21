@@ -5,8 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 
 const Banner = ({title}: {title: string}) => {
     return (
-        <div className="relative h-48 bg-gradient-to-r from-primary/90 to-secondary/90">
-            <div className="absolute inset-0 bg-[url('/placeholder.svg?height=400&width=1200')] opacity-10 mix-blend-overlay"></div>
+        <div className="relative h-32 md:h-40 bg-gradient-to-r from-primary/90 to-secondary/90">
             <div className="container mx-auto h-full px-4">
                 <div className="flex h-full flex-col justify-end pb-8">
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
