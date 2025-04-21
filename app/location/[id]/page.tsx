@@ -5,7 +5,6 @@ import AirQualityDisplay from "@/components/air-quality-display"
 import ForecastChart from "@/components/forecast-chart"
 import MapDisplay from "@/components/map-display"
 import WeatherAlerts from "@/components/weather-alerts"
-import { Navbar } from "@/components/navbar"
 
 interface LocationPageProps {
   params: {
@@ -19,7 +18,6 @@ export default function LocationPage({ params }: LocationPageProps) {
 
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-background p-4 md:p-8 pb-16">
         <div className="container mx-auto max-w-6xl space-y-6 md:space-y-8">
           <div className="flex items-center gap-2">

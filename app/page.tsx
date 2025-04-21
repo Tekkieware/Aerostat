@@ -3,7 +3,6 @@ import CurrentWeather from "@/components/current-weather"
 import AirQualityDisplay from "@/components/air-quality-display"
 import ForecastChart from "@/components/forecast-chart"
 import SavedLocations from "@/components/saved-locations"
-import { Navbar } from "@/components/navbar"
 import WeatherMetrics from "@/components/weather-metrics"
 import PollenCount from "@/components/pollen-count"
 import WeatherNews from "@/components/weather-news"
@@ -12,7 +11,6 @@ import DailyTip from "@/components/daily-tip"
 export default function Home() {
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-background p-4 md:p-8 pb-16">
         <div className="container mx-auto max-w-6xl space-y-6 md:space-y-8">
           <h1 className="text-2xl font-bold text-foreground md:text-3xl">Weather & Air Quality</h1>

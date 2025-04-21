@@ -1,11 +1,9 @@
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { Navbar } from "@/components/navbar"
 
 export default function AboutPage() {
   return (
     <>
-      <Navbar />
       <main className="min-h-screen bg-background p-4 md:p-8 pb-16">
         <div className="container mx-auto max-w-3xl space-y-6 md:space-y-8">
           <div className="flex items-center gap-2">
