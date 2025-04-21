@@ -1,14 +1,7 @@
 "use client"
-
-import {Cloud, Droplets, Info, Leaf, MapPin, Settings, Shield, Wind } from "lucide-react"
-
-import { useState } from "react"
+import { Settings, Settings2} from "lucide-react"
 import { motion } from "framer-motion"
-
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Banner from "@/components/banner"
 import SettingsForm from "@/components/settings-form"
 
@@ -27,9 +20,9 @@ export default function SettingsPage() {
           className="mx-auto max-w-4xl"
         >
           <Card className="border-none shadow-lg">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-5">
               <CardTitle className="flex items-center gap-2 text-2xl font-bold">
-                <Info className="h-5 w-5 text-primary" />
+                <Settings className="h-5 w-5 text-primary" />
                 Customize Your Experience
               </CardTitle>
             </CardHeader>
