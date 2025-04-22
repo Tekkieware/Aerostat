@@ -1,3 +1,73 @@
+import { StoredLocationInfo } from "./types"
+import { hasLocationChanged } from "./utils"
+
+const LOCAL_STORAGE_KEY = "location-data"
+
+
+export async function getCurrentLocationDetails(): Promise<StoredLocationInfo> {
+  const storedRaw = localStorage.getItem(LOCAL_STORAGE_KEY)
+  let stored: StoredLocationInfo | null = null
+
+  if (storedRaw) {
+    try {
+      stored = JSON.parse(storedRaw)
+    } catch {
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+    }
+  }
+
+  return new Promise<StoredLocationInfo>((resolve, reject) => {
+    if (!navigator.geolocation) {
+      return reject("Geolocation not supported")
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const currentCoords = {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+        }
+
+        console.log("RAW", coords)
+
+        if (
+          stored &&
+          !hasLocationChanged(currentCoords, stored, 0.001)
+        ) {
+          return resolve(stored)
+        }
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${coords.latitude}&lon=${coords.longitude}&format=json`
+          )
+          const data = await res.json()
+
+          const location: StoredLocationInfo = {
+            city: data.address.city || data.address.town || data.address.village || "",
+            state: data.address.state || "",
+            country: data.address.country,
+            latitude: Number(coords.latitude.toFixed(2)),
+            longitude: Number(coords.longitude.toFixed(2)),
+          }
+
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(location))
+          return resolve(location)
+        } catch (err) {
+          reject("Reverse geocoding failed.")
+        }
+      },
+      (err) => reject("Location access denied or unavailable.")
+    )
+  })
+}
+
+
+
+
+
+
+
 export interface WeatherData {
   location: string
   temperature: number

@@ -1,13 +1,12 @@
 import LocationSearch from "@/components/location-search"
-import CurrentWeather from "@/components/current-weather"
-import AirQualityDisplay from "@/components/air-quality-display"
 import ForecastChart from "@/components/forecast-chart"
 import SavedLocations from "@/components/saved-locations"
 import WeatherMetrics from "@/components/weather-metrics"
 import PollenCount from "@/components/pollen-count"
 import WeatherNews from "@/components/weather-news"
 import DailyTip from "@/components/daily-tip"
-
+import LocationWeatherAirQualityDisplay from "@/components/location-weather-air-quality-display"
+  
 export default function Home() {
   return (
     <>
@@ -19,10 +18,7 @@ export default function Home() {
 
           <DailyTip />
 
-          <div className="grid gap-4 md:gap-6 md:grid-cols-2">
-            <CurrentWeather />
-            <AirQualityDisplay />
-          </div>
+          <LocationWeatherAirQualityDisplay />
 
           <WeatherMetrics />
 

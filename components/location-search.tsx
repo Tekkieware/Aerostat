@@ -106,7 +106,7 @@ export default function LocationSearch() {
             )}
           </div>
           <Input
-            ref={inputRef}  // Set the input reference
+            ref={inputRef}  
             type="text"
             placeholder="Search for a location..."
             value={searchQuery}
@@ -124,7 +124,7 @@ export default function LocationSearch() {
 
       {showSuggestions && suggestions.length > 0 && (
         <div
-          ref={suggestionsRef}  // Set the suggestions reference
+          ref={suggestionsRef}  
           className="absolute z-10 w-full mt-1 rounded-md bg-card shadow-lg border border-border"
         >
           <ul className="py-1">
