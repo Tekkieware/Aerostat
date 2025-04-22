@@ -15,12 +15,11 @@ export default function LocationSearch() {
     setSearchQuery(query)
 
     if (query.length > 2) {
-      // In a real app, this would call an API
       const mockSuggestions = [
-        `${query}, New York, US`,
-        `${query}, California, US`,
-        `${query}, London, UK`,
-        `${query}, Tokyo, Japan`,
+       "New York, US",
+       "California, US",
+       "London, UK",
+       "Tokyo, Japan"
       ]
       setSuggestions(mockSuggestions)
       setShowSuggestions(true)

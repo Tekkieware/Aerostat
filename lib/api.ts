@@ -1,5 +1,3 @@
-// This file would contain the API integration for OpenWeatherMap and AQICN APIs
-
 export interface WeatherData {
   location: string
   temperature: number
