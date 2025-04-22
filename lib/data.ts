@@ -114,18 +114,6 @@ export const getAirQuality = async (locationData: StoredLocationInfo) => {
     const json: AirQualityData = await res.json()
 
     return json
-    
-    // setAqiData({
-    //   aqi: current.european_aqi,
-    //   category: getAqiCategory(current.european_aqi),
-    //   pollutants: {
-    //     pm25: current.pm2_5,
-    //     pm10: current.pm10,
-    //     o3: current.ozone,
-    //     no2: current.nitrogen_dioxide,
-    //   },
-    //   recommendation: getAqiRecommendation(current.european_aqi),
-    // })
   } catch (err) {
     console.error("Failed to fetch air quality", err)
   } 
