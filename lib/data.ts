@@ -1,9 +1,12 @@
-import { StoredLocationInfo } from "./types"
+import { StoredLocationInfo, WeatherData } from "./types"
 import { hasLocationChanged } from "./utils"
 
 const LOCAL_STORAGE_KEY = "location-data"
 
-
+/**
+ * Funtion to get current location from local storage or device location with geo reversing
+ * @returns location details
+ */
 export async function getCurrentLocationDetails(): Promise<StoredLocationInfo> {
   const storedRaw = localStorage.getItem(LOCAL_STORAGE_KEY)
   let stored: StoredLocationInfo | null = null
@@ -47,8 +50,8 @@ export async function getCurrentLocationDetails(): Promise<StoredLocationInfo> {
             city: data.address.city || data.address.town || data.address.village || "",
             state: data.address.state || "",
             country: data.address.country,
-            latitude: Number(coords.latitude.toFixed(2)),
-            longitude: Number(coords.longitude.toFixed(2)),
+            latitude: coords.latitude,
+            longitude: coords.longitude,
           }
 
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(location))
@@ -62,22 +65,29 @@ export async function getCurrentLocationDetails(): Promise<StoredLocationInfo> {
   })
 }
 
-
-
-
-
-
-
-export interface WeatherData {
-  location: string
-  temperature: number
-  condition: string
-  humidity: number
-  windSpeed: number
-  windDirection: string
-  precipitation: number
-  feelsLike: number
+/**
+ * 
+ * @param locationData An object with location info
+ * @returns weather data
+ */
+export const getWeatherData = async (locationData: StoredLocationInfo) => {
+  try {
+    const res = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude.toFixed(2)}&longitude=${locationData.longitude.toFixed(2)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m,wind_direction_10m,weathercode`
+    )
+    const json: WeatherData = await res.json()
+    return json
+  } catch (error) {
+    console.error("Error fetching weather data:", error)
+    return;
+  } 
 }
+
+
+
+
+
+
 
 export interface AqiData {
   aqi: number
@@ -119,24 +129,7 @@ export interface Alert {
   time: string
 }
 
-// In a real app, these functions would make API calls to the weather and AQI services
-export async function getWeatherData(locationId: string): Promise<WeatherData> {
-  // Mock implementation
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        location: "New York, US",
-        temperature: 24,
-        condition: "Partly Cloudy",
-        humidity: 65,
-        windSpeed: 12,
-        windDirection: "NE",
-        precipitation: 0.1,
-        feelsLike: 26,
-      })
-    }, 1000)
-  })
-}
+
 
 export async function getAqiData(locationId: string): Promise<AqiData> {
   // Mock implementation

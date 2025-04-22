@@ -18,3 +18,22 @@ export function hasLocationChanged(
     Math.abs(newLoc.longitude - oldLoc.longitude) > delta
   )
 }
+
+
+/**
+ * Function to convert Celsius to Fahrenheit
+ * @param celsius the temperature in celcius
+ * @returns the temperature in fahrenheit
+ */
+export const toFahrenheit = (celsius: number) => (celsius * 9) / 5 + 32
+
+/**
+ * Function to convert wind direction, given as degrees, into a cardinal direction
+ * @param degrees wind direction in degrees
+ * @returns wind cardinal direction
+ */
+function getWindDirection(degrees: number): string {
+  const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
+  const index = Math.round(degrees / 45) % 8
+  return directions[index]
+}

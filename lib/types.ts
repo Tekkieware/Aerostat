@@ -16,7 +16,7 @@ export type Location = {
     [key: `admin${number}_id`]: number | undefined;
   };
   
-  export interface WeatherUnits {
+  interface WeatherUnits {
     time: string
     interval: string
     temperature_2m: string
@@ -40,7 +40,7 @@ export type Location = {
     weathercode: number
   }
   
-  interface WeatherData {
+  export interface WeatherData {
     latitude: number
     longitude: number
     generationtime_ms: number
