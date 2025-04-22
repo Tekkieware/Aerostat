@@ -3,52 +3,33 @@
 import { useState, useEffect } from "react"
 import { AlertCircle } from "lucide-react"
 import { Progress } from "@/components/ui/progress"
+import { AirQualityData, StoredLocationInfo } from "@/lib/types"
+import { getAirQuality, getAqiCategory, getAqiRecommendation } from "@/lib/data"
+import { getAqiColor, getProgressColor } from "@/lib/utils"
 
 interface AirQualityDisplayProps {
-  locationId?: string
+  locationData: StoredLocationInfo,
+  fetchingLocationData: boolean
 }
 
-export default function AirQualityDisplay({ locationId }: AirQualityDisplayProps) {
+export default function AirQualityDisplay({ locationData, fetchingLocationData }: AirQualityDisplayProps) {
+  const [airQualityData, setAirQualityData] = useState<AirQualityData>() 
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Simulate API call
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000)
-    return () => clearTimeout(timer)
-  }, [locationId])
+   if(locationData){
+    setIsLoading(true)
+   getAirQuality(locationData).then((data)=>{
+    setAirQualityData(data)
+    setIsLoading(false)
+   })
+   }
+  }, [locationData])
 
-  // Mock data - in a real app this would come from an API
-  const aqiData = {
-    aqi: 45,
-    category: "Good",
-    pollutants: {
-      pm25: 12.5,
-      pm10: 25.3,
-      o3: 42.1,
-      no2: 15.6,
-    },
-    recommendation: "Air quality is good. It's a great day for outdoor activities!",
-  }
 
-  // Helper function to determine color based on AQI
-  const getAqiColor = (aqi: number) => {
-    if (aqi <= 50) return "bg-secondary text-secondary-foreground"
-    if (aqi <= 100) return "bg-yellow-500 text-yellow-50"
-    if (aqi <= 150) return "bg-orange-500 text-orange-50"
-    return "bg-accent text-accent-foreground"
-  }
+ 
 
-  // Helper function to determine progress color based on AQI
-  const getProgressColor = (aqi: number) => {
-    if (aqi <= 50) return "bg-secondary"
-    if (aqi <= 100) return "bg-yellow-500"
-    if (aqi <= 150) return "bg-orange-500"
-    return "bg-accent"
-  }
-
-  if (isLoading) {
+  if (isLoading || isLoading || !airQualityData) {
     return (
       <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm animate-pulse">
         <div className="h-7 w-1/3 bg-muted rounded-md mb-4 md:mb-6"></div>
@@ -71,43 +52,57 @@ export default function AirQualityDisplay({ locationId }: AirQualityDisplayProps
 
       <div className="flex justify-center mb-4 md:mb-6">
         <div
-          className={`h-24 w-24 md:h-32 md:w-32 rounded-full flex items-center justify-center ${getAqiColor(aqiData.aqi)}`}
+          className={`h-24 w-24 md:h-32 md:w-32 rounded-full flex items-center justify-center ${getAqiColor(airQualityData?.current?.european_aqi!)}`}
         >
           <div className="text-center">
-            <div className="text-2xl md:text-3xl font-bold">{aqiData.aqi}</div>
-            <div className="text-xs md:text-sm">{aqiData.category}</div>
+            <div className="text-2xl md:text-3xl font-bold">{airQualityData?.current?.european_aqi}</div>
+            <div className="text-xs md:text-sm">{getAqiCategory(airQualityData?.current?.european_aqi!)}</div>
           </div>
         </div>
       </div>
 
       <div className="flex items-start md:items-center gap-2 mb-4 md:mb-6 text-xs md:text-sm">
         <AlertCircle className="h-4 w-4 text-muted-foreground mt-0.5 md:mt-0" />
-        <span className="text-muted-foreground">{aqiData.recommendation}</span>
+        <span className="text-muted-foreground">{getAqiRecommendation(airQualityData?.current?.european_aqi!)}</span>
       </div>
 
       <div className="space-y-3 md:space-y-4">
         <div>
           <div className="flex justify-between text-xs md:text-sm mb-1">
             <span>PM2.5</span>
-            <span>{aqiData.pollutants.pm25} µg/m³</span>
+            <span>{airQualityData?.current?.pm2_5} µg/m³</span>
           </div>
-          <Progress value={aqiData.pollutants.pm25 / 0.5} className={getProgressColor(aqiData.aqi)} />
+          <Progress value={airQualityData?.current?.pm2_5! / 0.5} className={getProgressColor(airQualityData?.current?.european_aqi!)} />
         </div>
 
         <div>
           <div className="flex justify-between text-xs md:text-sm mb-1">
             <span>PM10</span>
-            <span>{aqiData.pollutants.pm10} µg/m³</span>
+            <span>{airQualityData?.current?.pm10} µg/m³</span>
           </div>
-          <Progress value={aqiData.pollutants.pm10 / 1.5} className={getProgressColor(aqiData.aqi)} />
+          <Progress value={airQualityData?.current?.pm10! / 1.5} className={getProgressColor(airQualityData?.current?.european_aqi!)} />
         </div>
 
         <div>
           <div className="flex justify-between text-xs md:text-sm mb-1">
             <span>O₃ (Ozone)</span>
-            <span>{aqiData.pollutants.o3} ppb</span>
+            <span>{airQualityData?.current?.ozone} μg/m³</span>
           </div>
-          <Progress value={aqiData.pollutants.o3 / 1.2} className={getProgressColor(aqiData.aqi)} />
+          <Progress value={airQualityData?.current?.ozone! / 1.2} className={getProgressColor(airQualityData?.current?.european_aqi!)} />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs md:text-sm mb-1">
+            <span>NO₂ (Nitrogen Dioxide)</span>
+            <span>{airQualityData?.current?.nitrogen_dioxide} μg/m³</span>
+          </div>
+          <Progress value={airQualityData?.current?.nitrogen_dioxide! / 1.2} className={getProgressColor(airQualityData?.current?.european_aqi!)} />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs md:text-sm mb-1">
+            <span>SO₂ (Sulphur Dioxide)</span>
+            <span>{airQualityData?.current?.sulphur_dioxide} μg/m³</span>
+          </div>
+          <Progress value={airQualityData?.current?.sulphur_dioxide! / 1.2} className={getProgressColor(airQualityData?.current?.european_aqi!)} />
         </div>
       </div>
     </div>

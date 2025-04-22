@@ -60,3 +60,35 @@ export type Location = {
     latitude: number
     longitude: number
   }
+
+
+  export interface AirQualityData {
+    latitude: number
+    longitude: number
+    generationtime_ms: number
+    utc_offset_seconds: number
+    timezone: string
+    timezone_abbreviation: string
+    elevation: number
+    current_units: {
+      time: string
+      european_aqi: string
+      pm10: string
+      pm2_5: string
+      carbon_monoxide: string
+      nitrogen_dioxide: string
+      sulphur_dioxide: string
+      ozone: string
+    }
+    current: {
+      time: string
+      european_aqi: number
+      pm10: number
+      pm2_5: number
+      carbon_monoxide: number
+      nitrogen_dioxide: number
+      sulphur_dioxide: number
+      ozone: number
+    }
+  }
+  

@@ -20,7 +20,7 @@ const LocationWeatherAirQualityDisplay = () => {
     return (
         <div className="grid gap-4 md:gap-6 md:grid-cols-2">
             <CurrentWeather fetchingLocationData={fetching} locationData={locationData!} />
-            <AirQualityDisplay />
+            <AirQualityDisplay fetchingLocationData={fetching} locationData={locationData!} />
         </div>
     )
 }

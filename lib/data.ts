@@ -1,4 +1,4 @@
-import { StoredLocationInfo, WeatherData } from "./types"
+import { AirQualityData, StoredLocationInfo, WeatherData } from "./types"
 import { hasLocationChanged } from "./utils"
 
 const LOCAL_STORAGE_KEY = "location-data"
@@ -84,9 +84,52 @@ export const getWeatherData = async (locationData: StoredLocationInfo) => {
 }
 
 
+export function getAqiCategory(aqi: number) {
+  if (aqi <= 50) return "Good"
+  if (aqi <= 100) return "Moderate"
+  if (aqi <= 150) return "Unhealthy for Sensitive Groups"
+  if (aqi <= 200) return "Unhealthy"
+  if (aqi <= 300) return "Very Unhealthy"
+  return "Hazardous"
+}
 
+export function getAqiRecommendation(aqi: number) {
+  if (aqi <= 50) return "Air quality is good. It's a great day for outdoor activities!"
+  if (aqi <= 100) return "Air quality is acceptable. Some pollutants may be a concern for a small number of sensitive individuals."
+  if (aqi <= 150) return "Sensitive individuals should reduce prolonged outdoor exertion."
+  if (aqi <= 200) return "Everyone may begin to experience health effects. Sensitive groups should avoid outdoor exertion."
+  if (aqi <= 300) return "Health warnings of emergency conditions. The entire population is more likely to be affected."
+  return "Serious health effects. Avoid all outdoor activities."
+}
 
+/**
+ * Fetches the air quality index data
+ * @param locationData The current location data
+ */
+export const getAirQuality = async (locationData: StoredLocationInfo) => {
+  try {
+    const res = await fetch(
+      `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=european_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone`
+    )
+    const json: AirQualityData = await res.json()
 
+    return json
+    
+    // setAqiData({
+    //   aqi: current.european_aqi,
+    //   category: getAqiCategory(current.european_aqi),
+    //   pollutants: {
+    //     pm25: current.pm2_5,
+    //     pm10: current.pm10,
+    //     o3: current.ozone,
+    //     no2: current.nitrogen_dioxide,
+    //   },
+    //   recommendation: getAqiRecommendation(current.european_aqi),
+    // })
+  } catch (err) {
+    console.error("Failed to fetch air quality", err)
+  } 
+}
 
 
 export interface AqiData {
