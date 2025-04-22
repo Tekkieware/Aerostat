@@ -19,8 +19,7 @@ const LocationWeatherAirQualityDisplay = () => {
     }, [])
     return (
         <div className="grid gap-4 md:gap-6 md:grid-cols-2">
-            {fetching ? "FETCHING......." : JSON.stringify(locationData)}
-            <CurrentWeather />
+            <CurrentWeather fetchingLocationData={fetching} locationData={locationData!} />
             <AirQualityDisplay />
         </div>
     )

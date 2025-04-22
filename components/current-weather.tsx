@@ -2,12 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { Cloud, CloudRain, Droplets, Thermometer, Wind } from "lucide-react"
+import { StoredLocationInfo } from "@/lib/types"
 
 interface CurrentWeatherProps {
   locationId?: string
+  locationData: StoredLocationInfo,
+  fetchingLocationData: boolean
 }
 
-export default function CurrentWeather({ locationId }: CurrentWeatherProps) {
+export default function CurrentWeather({ locationId, locationData, fetchingLocationData }: CurrentWeatherProps) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -30,7 +33,7 @@ export default function CurrentWeather({ locationId }: CurrentWeatherProps) {
     feelsLike: 26,
   }
 
-  if (isLoading) {
+  if (isLoading || fetchingLocationData) {
     return (
       <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm animate-pulse">
         <div className="h-7 w-1/3 bg-muted rounded-md mb-4 md:mb-6"></div>
@@ -48,7 +51,7 @@ export default function CurrentWeather({ locationId }: CurrentWeatherProps) {
 
   return (
     <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm">
-      <h2 className="text-xl font-medium text-foreground mb-4 md:mb-6">{weatherData.location}</h2>
+      <h2 className="text-xl font-medium text-foreground mb-4 md:mb-6">{locationData.city}, {locationData.state}, {locationData.country}.</h2>
 
       <div className="flex items-center mb-3 md:mb-4">
         <div className="text-4xl md:text-5xl font-bold text-foreground">{weatherData.temperature}°</div>
