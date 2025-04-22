@@ -6,14 +6,34 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Location } from "@/lib/types"
 
-
-
 export default function LocationSearch() {
   const [searchQuery, setSearchQuery] = useState("")
   const [suggestions, setSuggestions] = useState<Location[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [loading, setLoading] = useState(false)
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)  
+  const suggestionsRef = useRef<HTMLDivElement | null>(null)  
+
+ 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   useEffect(() => {
     if (searchQuery.length <= 2) {
@@ -26,9 +46,12 @@ export default function LocationSearch() {
       clearTimeout(debounceTimeout.current)
     }
 
-    debounceTimeout.current = setTimeout(() => {
-      fetchSuggestions(searchQuery)
-    }, 3000)
+ 
+    if (document.activeElement === inputRef.current) {
+      debounceTimeout.current = setTimeout(() => {
+        fetchSuggestions(searchQuery)
+      }, 3000)
+    }
 
     return () => {
       if (debounceTimeout.current) {
@@ -83,6 +106,7 @@ export default function LocationSearch() {
             )}
           </div>
           <Input
+            ref={inputRef}  // Set the input reference
             type="text"
             placeholder="Search for a location..."
             value={searchQuery}
@@ -99,7 +123,10 @@ export default function LocationSearch() {
       </div>
 
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 rounded-md bg-card shadow-lg border border-border">
+        <div
+          ref={suggestionsRef}  // Set the suggestions reference
+          className="absolute z-10 w-full mt-1 rounded-md bg-card shadow-lg border border-border"
+        >
           <ul className="py-1">
             {suggestions.map((loc) => {
               const displayName = `${loc.name}, ${loc.admin1 ?? ""}, ${loc.country}`
