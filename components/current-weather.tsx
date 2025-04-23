@@ -94,11 +94,11 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
       <div className="flex items-center mb-3 md:mb-4 justify-between">
         <div className="text-4xl md:text-5xl font-bold text-foreground">{temperature.toFixed(1)}°{temperatureUnit}</div>
         <div className="ml-4 animate-bounce">
-        {weatherCodeMap[current.weathercode]?.icon}
+        {weatherCodeMap[current.weather_code]?.icon}
         </div>
       </div>
 
-      <div className="text-base md:text-lg text-muted-foreground mb-4 md:mb-6">  <span>{weatherCodeMap[current.weathercode]?.label ?? "Unknown"}</span>
+      <div className="text-base md:text-lg text-muted-foreground mb-4 md:mb-6">  <span>{weatherCodeMap[current.weather_code]?.label ?? "Unknown"}</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3 md:gap-4 text-xs md:text-sm">
