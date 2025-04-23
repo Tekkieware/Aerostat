@@ -117,7 +117,14 @@ export type Location = {
   export type UVLevel = {
     min: number;
     max: number;
-    risk: 'Low' | 'Moderate' | 'High' | 'Very High' | 'Extreme';
+    risk: string;
     color: string;
     advice: string;
+  };
+
+
+  export type weatherState = {
+    locationData?: WeatherData;
+    isLoadingLocationData: boolean;
+    fetchLocationData: (latitude: number, longitude: number)=> Promise<void>;
   };
