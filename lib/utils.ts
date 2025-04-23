@@ -116,3 +116,20 @@ export const getHumidityLevel = (humidity: number): string => {
   if (humidity >= 60 && humidity <= 100) return "High";
   return "Unknown";
 }
+
+//Get tenmperature level
+export const getTemperatureLevel = (
+  temp: number,
+  unit: string
+): string => {
+  const celsius = unit === "F" ? (temp - 32) * (5 / 9) : temp;
+
+  if (celsius < 0) return "Freezing ❄️";
+  if (celsius >= 0 && celsius < 10) return "Cold 🧥";
+  if (celsius >= 10 && celsius < 20) return "Cool 🌬️";
+  if (celsius >= 20 && celsius < 30) return "Warm ☀️";
+  if (celsius >= 30 && celsius < 40) return "Hot 🔥";
+  if (celsius >= 40) return "Extreme Heat 🥵";
+
+  return "Unknown";
+};

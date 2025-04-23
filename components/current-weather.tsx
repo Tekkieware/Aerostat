@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import { StoredLocationInfo, WeatherData } from "@/lib/types"
 import { getWeatherData } from "@/lib/data"
-import { getCurrentUVIndex, getHumidityLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
+import { getCurrentUVIndex, getHumidityLevel, getTemperatureLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
 import { Card, CardContent } from "./ui/card"
 
 
@@ -71,14 +71,7 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
   const metrics = [
     ,
     
-    {
-      id: "feels",
-      name: "Feels Like",
-      value: "26°",
-      description: "Warm",
-      icon: <Thermometer className="h-5 w-5 text-red-500" />,
-      color: "bg-red-100 dark:bg-red-900/30",
-    },
+    ,
     {
       id: "pressure",
       name: "Pressure",
@@ -170,6 +163,17 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
               </div>
               <div className="text-lg md:text-xl font-bold">{current.relative_humidity_2m}%</div>
               <div className="text-xs text-muted-foreground">{getHumidityLevel(current.relative_humidity_2m)}</div>
+            </CardContent>
+          </Card>
+
+          <Card className={`overflow-hidden border-0 bg-red-100 dark:bg-red-900/30`}>
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">Feels Like</span>
+                <Thermometer className="h-5 w-5 text-red-500" />
+              </div>
+              <div className="text-lg md:text-xl font-bold">{apparentTemperature}%</div>
+              <div className="text-xs text-muted-foreground">{getTemperatureLevel(apparentTemperature, temperatureUnit!)}</div>
             </CardContent>
           </Card>
       </div>
