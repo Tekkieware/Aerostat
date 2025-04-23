@@ -13,11 +13,14 @@ import {
   CloudSnow,
   CloudFog,
   Zap,
-  ZapOff
+  ZapOff,
+  Gauge,
+  Umbrella
 } from "lucide-react"
 import { StoredLocationInfo, WeatherData } from "@/lib/types"
 import { getWeatherData } from "@/lib/data"
-import { getWindDirection, toFahrenheit } from "@/lib/utils"
+import { getCurrentUVIndex, getHumidityLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
+import { Card, CardContent } from "./ui/card"
 
 
 interface CurrentWeatherProps {
@@ -65,6 +68,35 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
     99: { label: "Thunderstorm with hail", icon: <ZapOff className="h-10 w-10 text-yellow-300" /> }
   }
 
+  const metrics = [
+    ,
+    
+    {
+      id: "feels",
+      name: "Feels Like",
+      value: "26°",
+      description: "Warm",
+      icon: <Thermometer className="h-5 w-5 text-red-500" />,
+      color: "bg-red-100 dark:bg-red-900/30",
+    },
+    {
+      id: "pressure",
+      name: "Pressure",
+      value: "1015 hPa",
+      description: "Normal",
+      icon: <Gauge className="h-5 w-5 text-gray-500" />,
+      color: "bg-gray-100 dark:bg-gray-800",
+    },
+    {
+      id: "rain",
+      name: "Rain Chance",
+      value: "30%",
+      description: "Light",
+      icon: <Umbrella className="h-5 w-5 text-green-500" />,
+      color: "bg-green-100 dark:bg-green-800",
+    },
+  ]
+
   if (fetchingLocationData || isLoading || !weatherData) {
     return (
 
@@ -78,6 +110,11 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
           <div className="h-8 bg-muted rounded-md"></div>
           <div className="h-8 bg-muted rounded-md"></div>
         </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="h-24 bg-muted rounded-md"></div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -87,6 +124,9 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
   const temperature = temperatureUnit === 'F' ? toFahrenheit(current.temperature_2m) : current.temperature_2m
   const apparentTemperature = temperatureUnit === 'F' ? toFahrenheit(current.apparent_temperature) : current.apparent_temperature
 
+  const uvIndex = getCurrentUVIndex(weatherData.daily.time, weatherData.daily.uv_index_max)
+  const uvRiskLevel = getUVRiskLevel(uvIndex)?.risk
+
   return (
     <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm">
       {locationData && <h2 className="text-xl font-medium text-foreground mb-4 md:mb-6">{locationData?.city}, {locationData?.state}, {locationData?.country}.</h2>}
@@ -94,32 +134,44 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
       <div className="flex items-center mb-3 md:mb-4 justify-between">
         <div className="text-4xl md:text-5xl font-bold text-foreground">{temperature.toFixed(1)}°{temperatureUnit}</div>
         <div className="ml-4 animate-bounce">
-        {weatherCodeMap[current.weather_code]?.icon}
+          {weatherCodeMap[current.weather_code]?.icon}
         </div>
       </div>
 
       <div className="text-base md:text-lg text-muted-foreground mb-4 md:mb-6">  <span>{weatherCodeMap[current.weather_code]?.label ?? "Unknown"}</span>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 md:gap-4 text-xs md:text-sm">
-        <div className="flex items-center gap-2">
-          <Thermometer className="h-4 w-4 text-primary" />
-          <span>Feels like {apparentTemperature.toFixed(1)}°{temperatureUnit}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Wind className="h-4 w-4 text-primary" />
-          <span>
-            {current.wind_speed_10m} km/h {getWindDirection(current.wind_direction_10m)}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Droplets className="h-4 w-4 text-primary" />
-          <span>Humidity {current.relative_humidity_2m}%</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <CloudRain className="h-4 w-4 text-primary" />
-          <span>Precipitation {current.precipitation} mm</span>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+          <Card className={`overflow-hidden border-0 bg-yellow-100 dark:bg-yellow-900/30`}>
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">UV Index</span>
+                <Sun className="h-5 w-5 text-yellow-500" />
+              </div>
+              <div className="text-lg md:text-xl font-bold">{uvIndex}</div>
+              <div className="text-xs text-muted-foreground">{uvRiskLevel}</div>
+            </CardContent>
+          </Card>
+          <Card className={`overflow-hidden border-0 bg-primary-100 dark:bg-primary/30`}>
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">Wind</span>
+                <Wind className="h-5 w-5 text-primary" />
+              </div>
+              <div className="text-lg md:text-xl font-bold">{current.wind_speed_10m}km/h</div>
+              <div className="text-xs text-muted-foreground">{getWindDirection(current.wind_direction_10m)}</div>
+            </CardContent>
+          </Card>
+          <Card className={`overflow-hidden border-0 bg-blue-100 dark:bg-blue-900/30`}>
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">Humidity</span>
+                <Droplets className="h-5 w-5 text-blue-500" />
+              </div>
+              <div className="text-lg md:text-xl font-bold">{current.relative_humidity_2m}%</div>
+              <div className="text-xs text-muted-foreground">{getHumidityLevel(current.relative_humidity_2m)}</div>
+            </CardContent>
+          </Card>
       </div>
     </div>
   )

@@ -71,9 +71,10 @@ export async function getCurrentLocationDetails(): Promise<StoredLocationInfo> {
  * @returns weather data
  */
 export const getWeatherData = async (locationData: StoredLocationInfo) => {
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
   try {
     const res = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude.toFixed(2)}&longitude=${locationData.longitude.toFixed(2)}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,wind_speed_10m,wind_direction_10m,weathercode`
+      `https://api.open-meteo.com/v1/forecast?latitude=${locationData.latitude.toFixed(2)}&longitude=${locationData.longitude.toFixed(2)}&hourly=temperature_2m,precipitation_probability&daily=precipitation_probability_max,temperature_2m_max,uv_index_max&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure&timezone=${timezone}`
     )
     const json: WeatherData = await res.json()
     return json

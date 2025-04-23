@@ -113,3 +113,11 @@ export type Location = {
     }
   }
   
+
+  export type UVLevel = {
+    min: number;
+    max: number;
+    risk: 'Low' | 'Moderate' | 'High' | 'Very High' | 'Extreme';
+    color: string;
+    advice: string;
+  };
