@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import { StoredLocationInfo, WeatherData } from "@/lib/types"
 import { getWeatherData } from "@/lib/data"
-import { getCurrentUVIndex, getHumidityLevel, getTemperatureLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
+import { getCurrentUVIndex, getHumidityLevel, getSurfacePressureLevel, getTemperatureLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
 import { Card, CardContent } from "./ui/card"
 
 
@@ -72,14 +72,7 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
     ,
     
     ,
-    {
-      id: "pressure",
-      name: "Pressure",
-      value: "1015 hPa",
-      description: "Normal",
-      icon: <Gauge className="h-5 w-5 text-gray-500" />,
-      color: "bg-gray-100 dark:bg-gray-800",
-    },
+   ,
     {
       id: "rain",
       name: "Rain Chance",
@@ -151,7 +144,7 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
                 <span className="text-xs font-medium text-muted-foreground">Wind</span>
                 <Wind className="h-5 w-5 text-primary" />
               </div>
-              <div className="text-lg md:text-xl font-bold">{current.wind_speed_10m}km/h</div>
+              <div className="text-lg md:text-xl font-bold">{current.wind_speed_10m} km/h</div>
               <div className="text-xs text-muted-foreground">{getWindDirection(current.wind_direction_10m)}</div>
             </CardContent>
           </Card>
@@ -174,6 +167,16 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
               </div>
               <div className="text-lg md:text-xl font-bold">{apparentTemperature}%</div>
               <div className="text-xs text-muted-foreground">{getTemperatureLevel(apparentTemperature, temperatureUnit!)}</div>
+            </CardContent>
+          </Card>
+          <Card className={`overflow-hidden border-0 bg-gray-100 dark:bg-gray-800`}>
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">Pressure</span>
+                <Gauge className="h-5 w-5 text-gray-500" />
+              </div>
+              <div className="text-lg md:text-xl font-bold">{current.surface_pressure} hPa</div>
+              <div className="text-xs text-muted-foreground">{getSurfacePressureLevel(current.surface_pressure)}</div>
             </CardContent>
           </Card>
       </div>

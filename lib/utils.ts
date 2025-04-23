@@ -133,3 +133,14 @@ export const getTemperatureLevel = (
 
   return "Unknown";
 };
+
+//Get surface pressure level
+export const getSurfacePressureLevel = (pressure: number): string => {
+  if (pressure < 980) return "Very Low 🌪️";
+  if (pressure >= 980 && pressure < 1000) return "Low 🌫️";
+  if (pressure >= 1000 && pressure < 1020) return "Normal 🌤️";
+  if (pressure >= 1020 && pressure < 1040) return "High ☀️";
+  if (pressure >= 1040) return "Very High 🔆";
+
+  return "Unknown";
+};
