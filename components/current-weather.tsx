@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import { StoredLocationInfo, WeatherData } from "@/lib/types"
 import { getWeatherData } from "@/lib/data"
-import { toFahrenheit } from "@/lib/utils"
+import { getWindDirection, toFahrenheit } from "@/lib/utils"
 
 
 interface CurrentWeatherProps {
@@ -109,7 +109,7 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
         <div className="flex items-center gap-2">
           <Wind className="h-4 w-4 text-primary" />
           <span>
-            {current.wind_speed_10m} km/h {current.wind_direction_10m}
+            {current.wind_speed_10m} km/h {getWindDirection(current.wind_direction_10m)}
           </span>
         </div>
         <div className="flex items-center gap-2">

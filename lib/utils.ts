@@ -32,7 +32,7 @@ export const toFahrenheit = (celsius: number) => (celsius * 9) / 5 + 32
  * @param degrees wind direction in degrees
  * @returns wind cardinal direction
  */
-function getWindDirection(degrees: number): string {
+export function getWindDirection(degrees: number): string {
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']
   const index = Math.round(degrees / 45) % 8
   return directions[index]
