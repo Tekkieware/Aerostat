@@ -19,7 +19,7 @@ import {
 } from "lucide-react"
 import { StoredLocationInfo, WeatherData } from "@/lib/types"
 import { getWeatherData } from "@/lib/data"
-import { getCurrentUVIndex, getHumidityLevel, getSurfacePressureLevel, getTemperatureLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
+import { getCurrentUVIndex, getHumidityLevel, getRainChance, getRainChanceLabel, getSurfacePressureLevel, getTemperatureLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
 import { Card, CardContent } from "./ui/card"
 
 
@@ -68,20 +68,6 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
     99: { label: "Thunderstorm with hail", icon: <ZapOff className="h-10 w-10 text-yellow-300" /> }
   }
 
-  const metrics = [
-    ,
-    
-    ,
-   ,
-    {
-      id: "rain",
-      name: "Rain Chance",
-      value: "30%",
-      description: "Light",
-      icon: <Umbrella className="h-5 w-5 text-green-500" />,
-      color: "bg-green-100 dark:bg-green-800",
-    },
-  ]
 
   if (fetchingLocationData || isLoading || !weatherData) {
     return (
@@ -113,6 +99,8 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
   const uvIndex = getCurrentUVIndex(weatherData.daily.time, weatherData.daily.uv_index_max)
   const uvRiskLevel = getUVRiskLevel(uvIndex)?.risk
 
+  const rainChance = getRainChance(weatherData.hourly.time, weatherData.hourly.precipitation_probability)
+
   return (
     <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm">
       {locationData && <h2 className="text-xl font-medium text-foreground mb-4 md:mb-6">{locationData?.city}, {locationData?.state}, {locationData?.country}.</h2>}
@@ -128,57 +116,68 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
-          <Card className={`overflow-hidden border-0 bg-yellow-100 dark:bg-yellow-900/30`}>
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">UV Index</span>
-                <Sun className="h-5 w-5 text-yellow-500" />
-              </div>
-              <div className="text-lg md:text-xl font-bold">{uvIndex}</div>
-              <div className="text-xs text-muted-foreground">{uvRiskLevel}</div>
-            </CardContent>
-          </Card>
-          <Card className={`overflow-hidden border-0 bg-primary-100 dark:bg-primary/30`}>
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Wind</span>
-                <Wind className="h-5 w-5 text-primary" />
-              </div>
-              <div className="text-lg md:text-xl font-bold">{current.wind_speed_10m} km/h</div>
-              <div className="text-xs text-muted-foreground">{getWindDirection(current.wind_direction_10m)}</div>
-            </CardContent>
-          </Card>
-          <Card className={`overflow-hidden border-0 bg-blue-100 dark:bg-blue-900/30`}>
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Humidity</span>
-                <Droplets className="h-5 w-5 text-blue-500" />
-              </div>
-              <div className="text-lg md:text-xl font-bold">{current.relative_humidity_2m}%</div>
-              <div className="text-xs text-muted-foreground">{getHumidityLevel(current.relative_humidity_2m)}</div>
-            </CardContent>
-          </Card>
+        <Card className={`overflow-hidden border-0 bg-red-100 dark:bg-red-900/30`}>
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">Feels Like</span>
+              <Thermometer className="h-5 w-5 text-red-500" />
+            </div>
+            <div className="text-lg md:text-xl font-bold">{apparentTemperature}%</div>
+            <div className="text-xs text-muted-foreground">{getTemperatureLevel(apparentTemperature, temperatureUnit!)}</div>
+          </CardContent>
+        </Card>
+        <Card className={`overflow-hidden border-0 bg-yellow-100 dark:bg-yellow-900/30`}>
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">UV Index</span>
+              <Sun className="h-5 w-5 text-yellow-500" />
+            </div>
+            <div className="text-lg md:text-xl font-bold">{uvIndex}</div>
+            <div className="text-xs text-muted-foreground">{uvRiskLevel}</div>
+          </CardContent>
+        </Card>
+        <Card className={`overflow-hidden border-0 bg-orange-100 dark:bg-orange-900/30`}>
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">Wind</span>
+              <Wind className="h-5 w-5 text-orange-900" />
+            </div>
+            <div className="text-lg md:text-xl font-bold">{current.wind_speed_10m} km/h</div>
+            <div className="text-xs text-muted-foreground">{getWindDirection(current.wind_direction_10m)}</div>
+          </CardContent>
+        </Card>
+        <Card className={`overflow-hidden border-0 bg-blue-100 dark:bg-blue-900/30`}>
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">Humidity</span>
+              <Droplets className="h-5 w-5 text-blue-500" />
+            </div>
+            <div className="text-lg md:text-xl font-bold">{current.relative_humidity_2m}%</div>
+            <div className="text-xs text-muted-foreground">{getHumidityLevel(current.relative_humidity_2m)}</div>
+          </CardContent>
+        </Card>
 
-          <Card className={`overflow-hidden border-0 bg-red-100 dark:bg-red-900/30`}>
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Feels Like</span>
-                <Thermometer className="h-5 w-5 text-red-500" />
-              </div>
-              <div className="text-lg md:text-xl font-bold">{apparentTemperature}%</div>
-              <div className="text-xs text-muted-foreground">{getTemperatureLevel(apparentTemperature, temperatureUnit!)}</div>
-            </CardContent>
-          </Card>
-          <Card className={`overflow-hidden border-0 bg-gray-100 dark:bg-gray-800`}>
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground">Pressure</span>
-                <Gauge className="h-5 w-5 text-gray-500" />
-              </div>
-              <div className="text-lg md:text-xl font-bold">{current.surface_pressure} hPa</div>
-              <div className="text-xs text-muted-foreground">{getSurfacePressureLevel(current.surface_pressure)}</div>
-            </CardContent>
-          </Card>
+
+        <Card className={`overflow-hidden border-0 bg-gray-100 dark:bg-gray-800`}>
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">Pressure</span>
+              <Gauge className="h-5 w-5 text-gray-500" />
+            </div>
+            <div className="text-lg md:text-xl font-bold">{current.surface_pressure} hPa</div>
+            <div className="text-xs text-muted-foreground">{getSurfacePressureLevel(current.surface_pressure)}</div>
+          </CardContent>
+        </Card>
+        <Card className={`overflow-hidden border-0 bg-green-100 dark:bg-green-800`}>
+          <CardContent className="p-3 md:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-muted-foreground">Rain Chance</span>
+              <Umbrella className="h-5 w-5 text-green-500" />
+            </div>
+            <div className="text-lg md:text-xl font-bold">{rainChance}%</div>
+            <div className="text-xs text-muted-foreground">{getRainChanceLabel(rainChance!)}</div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
