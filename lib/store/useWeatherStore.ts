@@ -2,12 +2,6 @@ import { create } from 'zustand'
 import { WeatherData, weatherState } from '../types'
 
 
-
-
-
-
-
-
 export const useWeatherStore = create<weatherState>((set, get) => ({
   isLoadingLocationData: false,
   fetchLocationData: async (latitude: number, longitude: number) => {

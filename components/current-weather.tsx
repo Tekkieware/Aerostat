@@ -18,9 +18,9 @@ import {
   Umbrella
 } from "lucide-react"
 import { StoredLocationInfo, WeatherData } from "@/lib/types"
-import { getWeatherData } from "@/lib/data"
 import { getCurrentUVIndex, getHumidityLevel, getRainChance, getRainChanceLabel, getSurfacePressureLevel, getTemperatureLevel, getUVRiskLevel, getWindDirection, toFahrenheit } from "@/lib/utils"
 import { Card, CardContent } from "./ui/card"
+import { useWeatherStore } from "@/lib/store/useWeatherStore"
 
 
 interface CurrentWeatherProps {
@@ -29,18 +29,14 @@ interface CurrentWeatherProps {
 }
 
 export default function CurrentWeather({ locationData, fetchingLocationData }: CurrentWeatherProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [weatherData, setWeatherData] = useState<WeatherData>()
   const [temperatureUnit, setTemperatureUnit] = useState<string>()
 
+  const {locationData: weatherData, isLoadingLocationData, fetchLocationData} = useWeatherStore()
+
   useEffect(() => {
-    setIsLoading(true)
     if (locationData) {
       if (!locationData.latitude || !locationData.latitude) return;
-      getWeatherData(locationData).then((data) => {
-        setWeatherData(data)
-        setIsLoading(false)
-      })
+      fetchLocationData(locationData.latitude, locationData.longitude)
     }
     setTemperatureUnit(localStorage.getItem('temperature-unit') || "C")
   }, [locationData])
@@ -69,7 +65,7 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
   }
 
 
-  if (fetchingLocationData || isLoading || !weatherData) {
+  if (fetchingLocationData || isLoadingLocationData || !weatherData) {
     return (
 
       <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm animate-pulse">
