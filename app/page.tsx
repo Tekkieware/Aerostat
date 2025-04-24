@@ -1,7 +1,6 @@
 import LocationSearch from "@/components/location-search"
 import ForecastChart from "@/components/forecast-chart"
 import SavedLocations from "@/components/saved-locations"
-import WeatherMetrics from "@/components/weather-metrics"
 import PollenCount from "@/components/pollen-count"
 import WeatherNews from "@/components/weather-news"
 import DailyTip from "@/components/daily-tip"
@@ -21,12 +20,6 @@ export default function Home() {
           <LocationWeatherAirQualityDisplay />
 
           <ForecastChart />
-
-          <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
-            <PollenCount />
-            <WeatherNews />
-          </div>
-
           <SavedLocations />
         </div>
       </main>
