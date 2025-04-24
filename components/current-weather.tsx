@@ -118,7 +118,7 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
               <span className="text-xs font-medium text-muted-foreground">Feels Like</span>
               <Thermometer className="h-5 w-5 text-red-500" />
             </div>
-            <div className="text-lg md:text-xl font-bold">{apparentTemperature}%</div>
+            <div className="text-lg md:text-xl font-bold">{apparentTemperature.toFixed(1)}°{temperatureUnit}</div>
             <div className="text-xs text-muted-foreground">{getTemperatureLevel(apparentTemperature, temperatureUnit!)}</div>
           </CardContent>
         </Card>
