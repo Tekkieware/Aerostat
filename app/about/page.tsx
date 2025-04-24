@@ -1,6 +1,6 @@
 "use client"
 
-import {Cloud, Droplets, Info, Leaf, MapPin, Settings, Shield, Wind } from "lucide-react"
+import { Cloud, Droplets, Info, Leaf, MapPin, Settings, Shield, Wind } from "lucide-react"
 
 import { useState } from "react"
 import { motion } from "framer-motion"
@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Banner from "@/components/banner"
+import Link from "next/link"
 
 export default function AboutPage() {
   const [activeTab, setActiveTab] = useState("overview")
@@ -67,7 +68,7 @@ export default function AboutPage() {
                           <h4 className="font-medium">Weather Data</h4>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Provided by OpenWeatherMap API with hourly updates and 7-day forecasts
+                          Provided by <a className=" text-primary" href="https://open-meteo.com/en/docs">Open Meteo</a> API with hourly updates and 7-day forecasts
                         </p>
                       </div>
 
@@ -79,7 +80,7 @@ export default function AboutPage() {
                           <h4 className="font-medium">Air Quality Data</h4>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Sourced from AQICN API with real-time pollutant measurements and health recommendations
+                          Sourced from <a className=" text-primary" href="https://open-meteo.com/en/docs/air-quality-api">Open Meteo</a> API with real-time pollutant measurements and health recommendations
                         </p>
                       </div>
                     </div>
@@ -106,18 +107,13 @@ export default function AboutPage() {
                       },
                       {
                         icon: <Droplets className="h-5 w-5" />,
-                        title: "Precipitation Alerts",
-                        desc: "Timely rain and snow notifications",
-                      },
-                      {
-                        icon: <Leaf className="h-5 w-5" />,
-                        title: "Pollen Tracking",
-                        desc: "Seasonal allergen monitoring",
+                        title: "Precipitation Forcasts",
+                        desc: "Timely rain/snow conditions and 7-day predictions",
                       },
                       {
                         icon: <Settings className="h-5 w-5" />,
                         title: "Customization",
-                        desc: "Personalize units and notification preferences",
+                        desc: "Personalize units and mode preferences",
                       },
                     ].map((feature, i) => (
                       <motion.div
@@ -159,47 +155,33 @@ export default function AboutPage() {
                   <div>
                     <h3 className="mb-4 text-lg font-semibold">Contact Information</h3>
                     <div className="rounded-lg border bg-card p-6">
-                      <p className="mb-4 text-muted-foreground">For support or feedback, please contact us at:</p>
-                      <p className="font-medium text-primary">support@weatherairapp.com</p>
+                      <p className="mb-4 text-muted-foreground">For support or feedback, please contact me via:</p>
+                      <p className="font-medium text-primary">isaiahozadhe247@gmail.com</p>
 
                       <Separator className="my-6" />
 
                       <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" size="sm" className="gap-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-twitter"
-                          >
-                            <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-                          </svg>
-                          Twitter
-                        </Button>
-                        <Button variant="outline" size="sm" className="gap-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="lucide lucide-github"
-                          >
-                            <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                            <path d="M9 18c-4.51 2-5-2-7-2" />
-                          </svg>
-                          GitHub
-                        </Button>
+                        <Link href="https://github.com/Tekkieware" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                          <Button variant="outline" size="sm" className="gap-2">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="lucide lucide-github"
+                            >
+                              <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                              <path d="M9 18c-4.51 2-5-2-7-2" />
+                            </svg>
+                            GitHub
+                          </Button>
+                        </Link>
+                        <Link href="https://www.linkedin.com/in/isaiah-ozadhe" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                         <Button variant="outline" size="sm" className="gap-2">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -219,6 +201,7 @@ export default function AboutPage() {
                           </svg>
                           LinkedIn
                         </Button>
+                        </Link>
                       </div>
                     </div>
                   </div>
