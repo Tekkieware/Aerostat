@@ -19,6 +19,7 @@ export default function Home() {
           <DailyTip />
 
           <LocationWeatherAirQualityDisplay />
+
           <ForecastChart />
 
           <div className="grid gap-4 md:gap-6 lg:grid-cols-2">

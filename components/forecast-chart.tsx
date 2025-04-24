@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
   AreaChart,
   Area,
@@ -15,50 +15,61 @@ import {
 } from "recharts"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { useWeatherStore } from "@/lib/store/useWeatherStore"
+import { format, parseISO, isToday } from "date-fns"
+import { toFahrenheit } from "@/lib/utils"
 
-interface ForecastChartProps {
-  locationId?: string
-}
 
-export default function ForecastChart({ locationId }: ForecastChartProps) {
+export default function ForecastChart() {
   const [period, setPeriod] = useState("hourly")
+  const { isLoadingLocationData, locationData } = useWeatherStore()
+  const [unit, setUnit] = useState<"C" | "F">("C")
 
-  // Mock data - in a real app this would come from an API
-  const hourlyForecast = [
-    { time: "Now", temp: 24, precipitation: 0 },
-    { time: "1 PM", temp: 25, precipitation: 0 },
-    { time: "2 PM", temp: 26, precipitation: 0 },
-    { time: "3 PM", temp: 27, precipitation: 0 },
-    { time: "4 PM", temp: 26, precipitation: 10 },
-    { time: "5 PM", temp: 25, precipitation: 30 },
-    { time: "6 PM", temp: 24, precipitation: 20 },
-    { time: "7 PM", temp: 22, precipitation: 10 },
-    { time: "8 PM", temp: 21, precipitation: 0 },
-    { time: "9 PM", temp: 20, precipitation: 0 },
-    { time: "10 PM", temp: 19, precipitation: 0 },
-    { time: "11 PM", temp: 18, precipitation: 0 },
-  ]
 
-  const dailyForecast = [
-    { day: "Today", high: 27, low: 18, precipitation: 20 },
-    { day: "Tue", high: 26, low: 17, precipitation: 30 },
-    { day: "Wed", high: 25, low: 16, precipitation: 40 },
-    { day: "Thu", high: 24, low: 15, precipitation: 10 },
-    { day: "Fri", high: 23, low: 14, precipitation: 0 },
-    { day: "Sat", high: 22, low: 13, precipitation: 0 },
-    { day: "Sun", high: 24, low: 14, precipitation: 0 },
-  ]
+  useEffect(() => {
+    const stored = localStorage.getItem("temperature-unit")
+    if (stored === "F") setUnit("F")
+  }, [])
 
-  // Custom tooltip formatter
+
+  const hourlyForecast = useMemo(() => {
+    if (!locationData?.hourly) return []
+  
+    return locationData.hourly.time.map((time, index) => {
+      const temp = locationData.hourly.temperature_2m[index]
+      return {
+        time: index === 0 ? "Now" : format(parseISO(time), "h a"),
+        temp: unit === "F" ? toFahrenheit(temp) : temp,
+        precipitation: locationData.hourly.precipitation_probability[index],
+      }
+    }).slice(0, 12)
+  }, [locationData, unit])
+  
+  const dailyForecast = useMemo(() => {
+    if (!locationData?.daily) return []
+  
+    return locationData.daily.time.map((date, index) => {
+      const high = locationData.daily.temperature_2m_max[index]
+      return {
+        day: isToday(parseISO(date)) ? "Today" : format(parseISO(date), "EEE"),
+        high: unit === "F" ? toFahrenheit(high) : high,
+        precipitation: locationData.daily.precipitation_probability_max[index],
+      }
+    })
+  }, [locationData, unit])
+  
+
   const formatTooltip = (value: number, name: string) => {
+    const unitLabel = unit === "F" ? "°F" : "°C"
     if (name === "temp" || name === "high" || name === "low") {
-      return [`${value}°C`, name === "temp" ? "Temperature" : name === "high" ? "High" : "Low"]
+      return [`${value}${unitLabel}`, name === "temp" ? "Temperature" : name === "high" ? "High" : "Low"]
     }
     if (name === "precipitation") {
       return [`${value}%`, "Precipitation"]
     }
     return [value, name]
   }
+  
 
   return (
     <Card>
@@ -81,8 +92,11 @@ export default function ForecastChart({ locationId }: ForecastChartProps) {
         </div>
       </CardHeader>
       <CardContent>
-        {period === "hourly" ? (
+        {isLoadingLocationData ? (
+          <p className="text-sm text-muted-foreground">Loading forecast data...</p>
+        ) : period === "hourly" ? (
           <div className="space-y-8">
+            {/* Hourly Temperature Chart */}
             <div>
               <h3 className="text-sm font-medium mb-2">Temperature (°C)</h3>
               <p className="text-xs text-muted-foreground mb-4">
@@ -98,78 +112,29 @@ export default function ForecastChart({ locationId }: ForecastChartProps) {
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                    <XAxis
-                      dataKey="time"
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis
-                      domain={["dataMin - 2", "dataMax + 2"]}
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                      tickFormatter={(value) => `${value}°`}
-                    />
-                    <Tooltip
-                      formatter={formatTooltip}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        borderColor: "hsl(var(--border))",
-                        borderRadius: "0.5rem",
-                      }}
-                      labelStyle={{ color: "hsl(var(--foreground))" }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="temp"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#colorTemp)"
-                      name="Temperature"
-                    />
+                    <XAxis dataKey="time" tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis domain={["dataMin - 2", "dataMax + 2"]} tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" tickFormatter={(value) => `${value}°`} />
+                    <Tooltip formatter={formatTooltip} contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "0.5rem" }} labelStyle={{ color: "hsl(var(--foreground))" }} />
+                    <Area type="monotone" dataKey="temp" stroke="hsl(var(--primary))" strokeWidth={2} fillOpacity={1} fill="url(#colorTemp)" name="Temperature" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
+            {/* Hourly Precipitation */}
             <div>
               <h3 className="text-sm font-medium mb-2">Precipitation Chance (%)</h3>
               <p className="text-xs text-muted-foreground mb-4">
-                Probability of precipitation for each hour, helping you plan outdoor activities
+                Probability of precipitation for each hour
               </p>
               <div className="h-[150px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={hourlyForecast} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                    <XAxis
-                      dataKey="time"
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                      tickFormatter={(value) => `${value}%`}
-                    />
-                    <Tooltip
-                      formatter={formatTooltip}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        borderColor: "hsl(var(--border))",
-                        borderRadius: "0.5rem",
-                      }}
-                      labelStyle={{ color: "hsl(var(--foreground))" }}
-                    />
-                    <Bar
-                      dataKey="precipitation"
-                      fill="hsl(var(--secondary))"
-                      radius={[4, 4, 0, 0]}
-                      name="Precipitation"
-                    />
+                    <XAxis dataKey="time" tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" tickFormatter={(value) => `${value}%`} />
+                    <Tooltip formatter={formatTooltip} contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "0.5rem" }} labelStyle={{ color: "hsl(var(--foreground))" }} />
+                    <Bar dataKey="precipitation" fill="hsl(var(--secondary))" radius={[4, 4, 0, 0]} name="Precipitation" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -177,6 +142,7 @@ export default function ForecastChart({ locationId }: ForecastChartProps) {
           </div>
         ) : (
           <div className="space-y-8">
+            {/* Daily High/Low Temps */}
             <div>
               <h3 className="text-sm font-medium mb-2">Temperature Range (°C)</h3>
               <p className="text-xs text-muted-foreground mb-4">Daily high and low temperatures for the week ahead</p>
@@ -184,72 +150,28 @@ export default function ForecastChart({ locationId }: ForecastChartProps) {
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dailyForecast} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                    <XAxis
-                      dataKey="day"
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis
-                      domain={["dataMin - 5", "dataMax + 5"]}
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                      tickFormatter={(value) => `${value}°`}
-                    />
-                    <Tooltip
-                      formatter={formatTooltip}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        borderColor: "hsl(var(--border))",
-                        borderRadius: "0.5rem",
-                      }}
-                      labelStyle={{ color: "hsl(var(--foreground))" }}
-                    />
+                    <XAxis dataKey="day" tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis domain={["dataMin - 5", "dataMax + 5"]} tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" tickFormatter={(value) => `${value}°`} />
+                    <Tooltip formatter={formatTooltip} contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "0.5rem" }} labelStyle={{ color: "hsl(var(--foreground))" }} />
                     <Legend />
                     <Bar dataKey="high" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="High" />
-                    <Bar dataKey="low" fill="hsl(var(--muted))" radius={[4, 4, 0, 0]} name="Low" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
+            {/* Daily Precipitation */}
             <div>
               <h3 className="text-sm font-medium mb-2">Precipitation Chance (%)</h3>
-              <p className="text-xs text-muted-foreground mb-4">
-                Daily precipitation probability to help you plan your week
-              </p>
+              <p className="text-xs text-muted-foreground mb-4">Daily precipitation probability</p>
               <div className="h-[150px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={dailyForecast} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-                    <XAxis
-                      dataKey="day"
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12 }}
-                      tickMargin={10}
-                      stroke="hsl(var(--muted-foreground))"
-                      tickFormatter={(value) => `${value}%`}
-                    />
-                    <Tooltip
-                      formatter={formatTooltip}
-                      contentStyle={{
-                        backgroundColor: "hsl(var(--card))",
-                        borderColor: "hsl(var(--border))",
-                        borderRadius: "0.5rem",
-                      }}
-                      labelStyle={{ color: "hsl(var(--foreground))" }}
-                    />
-                    <Bar
-                      dataKey="precipitation"
-                      fill="hsl(var(--secondary))"
-                      radius={[4, 4, 0, 0]}
-                      name="Precipitation"
-                    />
+                    <XAxis dataKey="day" tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" />
+                    <YAxis tick={{ fontSize: 12 }} tickMargin={10} stroke="hsl(var(--muted-foreground))" tickFormatter={(value) => `${value}%`} />
+                    <Tooltip formatter={formatTooltip} contentStyle={{ backgroundColor: "hsl(var(--card))", borderColor: "hsl(var(--border))", borderRadius: "0.5rem" }} labelStyle={{ color: "hsl(var(--foreground))" }} />
+                    <Bar dataKey="precipitation" fill="hsl(var(--secondary))" radius={[4, 4, 0, 0]} name="Precipitation" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -260,4 +182,3 @@ export default function ForecastChart({ locationId }: ForecastChartProps) {
     </Card>
   )
 }
-
