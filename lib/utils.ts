@@ -57,7 +57,7 @@ export const uvIndexMap: UVLevel[] = [
     max: 2.9,
     risk: "Low",
     color: "#2ECC71",
-    advice: "With low UV levels. You can safely enjoy being outside!",
+    advice: "With low UV levels today, you can safely enjoy being outside!",
   },
   {
     min: 3,
@@ -65,7 +65,7 @@ export const uvIndexMap: UVLevel[] = [
     risk: "Moderate",
     color: "#F1C40F",
     advice:
-      "With moderate UV levels. Seek shade during midday hours, cover up and wear sunscreen.",
+      "With moderate UV levels today, seek shade during midday hours, cover up and wear sunscreen.",
   },
   {
     min: 6,
@@ -73,7 +73,7 @@ export const uvIndexMap: UVLevel[] = [
     risk: "High",
     color: "#E67E22",
     advice:
-      "With high UV levels. Reduce time in the sun between 10 a.m. and 4 p.m. Wear SPF 30+ sunscreen, sunglasses, and protective clothing.",
+      "With high UV levels, today, reduce time in the sun between 10 a.m. and 4 p.m. Wear SPF 30+ sunscreen, sunglasses, and protective clothing.",
   },
   {
     min: 8,
@@ -81,7 +81,7 @@ export const uvIndexMap: UVLevel[] = [
     risk: "Very High",
     color: "#E74C3C",
     advice:
-      "With high UV levels. Take extra precautions. Avoid sun exposure during midday hours. Cover up and use broad-spectrum SPF 30+ sunscreen.",
+      "With high UV levels today, take extra precautions. Avoid sun exposure during midday hours. Cover up and use broad-spectrum SPF 30+ sunscreen.",
   },
   {
     min: 11,
@@ -89,7 +89,7 @@ export const uvIndexMap: UVLevel[] = [
     risk: "Extreme",
     color: "#E74C3C",
     advice:
-      "With high UV levels. Try to avoid being outside during midday. Full protection is essential: wear SPF 50+, hat, sunglasses, and seek shade.",
+      "With high UV levels today, try to avoid being outside during midday. Full protection is essential: wear SPF 50+, hat, sunglasses, and seek shade.",
   },
 ];
 
@@ -164,3 +164,25 @@ export const getRainChanceLabel = (rainChance: number): string => {
 
   return "Unknown";
 };
+
+
+export const formatToLocalHour = (isoString: string, offsetSeconds: number) => {
+  const date = new Date(isoString)
+
+  console.log('Original UTC Date:', date)  // Log the UTC date
+  
+  // Use the UTC offset from the location data if available, else use the browser's local time
+  const localOffset = offsetSeconds || new Date().getTimezoneOffset() * 60; // Get local timezone offset in seconds
+
+  const localTimestamp = date.getTime() + localOffset * 1000;
+  const localDate = new Date(localTimestamp);
+
+  console.log('Adjusted Local Date:', localDate)  // Log the local adjusted date
+
+  return new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    hour12: true,
+  }).format(localDate);
+};
+
+

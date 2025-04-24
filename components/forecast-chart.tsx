@@ -17,7 +17,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { useWeatherStore } from "@/lib/store/useWeatherStore"
 import { format, parseISO, isToday } from "date-fns"
-import { toFahrenheit } from "@/lib/utils"
+import { formatToLocalHour, toFahrenheit } from "@/lib/utils"
 
 
 export default function ForecastChart() {
@@ -35,15 +35,28 @@ export default function ForecastChart() {
   const hourlyForecast = useMemo(() => {
     if (!locationData?.hourly) return []
   
-    return locationData.hourly.time.map((time, index) => {
-      const temp = locationData.hourly.temperature_2m[index]
+    const now = new Date()
+    const nowHour = now.getHours()
+    
+    const startIndex = locationData.hourly.time.findIndex((timeStr) => {
+      const time = new Date(timeStr)
+      return time.getHours() === nowHour && time.getDate() === now.getDate()
+    })
+  
+    const indexStart = startIndex !== -1 ? startIndex : 0
+  
+    return locationData.hourly.time.slice(indexStart, indexStart + 12).map((time, i) => {
+      const idx = indexStart + i
+      const temp = locationData.hourly.temperature_2m[idx]
       return {
-        time: index === 0 ? "Now" : format(parseISO(time), "h a"),
+        time: i === 0 ? "Now" : format(new Date(time), "h a"),
         temp: unit === "F" ? toFahrenheit(temp) : temp,
-        precipitation: locationData.hourly.precipitation_probability[index],
+        precipitation: locationData.hourly.precipitation_probability[idx],
       }
-    }).slice(0, 12)
+    })
   }, [locationData, unit])
+  
+  
   
   const dailyForecast = useMemo(() => {
     if (!locationData?.daily) return []
@@ -92,7 +105,7 @@ export default function ForecastChart() {
         </div>
       </CardHeader>
       <CardContent>
-        {isLoadingLocationData ? (
+        {isLoadingLocationData || !locationData ? (
           <p className="text-sm text-muted-foreground">Loading forecast data...</p>
         ) : period === "hourly" ? (
           <div className="space-y-8">
