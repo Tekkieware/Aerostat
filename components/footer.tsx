@@ -26,7 +26,7 @@ export function Footer() {
           <Link href="mailto:isaiahozadhe247@gmail.com" aria-label="Email">
             <Mail className="h-5 w-5 hover:text-primary transition-colors" />
           </Link>
-          <Link href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <Link href="https://www.linkedin.com/in/isaiah-ozadhe" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
             <Linkedin className="h-5 w-5 hover:text-primary transition-colors" />
           </Link>
         </div>
