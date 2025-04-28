@@ -5,6 +5,7 @@ import { Search, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Location } from "@/lib/types"
+import { useRouter } from "next/navigation"
 
 export default function LocationSearch() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -14,6 +15,7 @@ export default function LocationSearch() {
   const debounceTimeout = useRef<NodeJS.Timeout | null>(null)
   const inputRef = useRef<HTMLInputElement | null>(null)  
   const suggestionsRef = useRef<HTMLDivElement | null>(null)  
+  const router = useRouter()
 
  
   useEffect(() => {
@@ -92,6 +94,7 @@ export default function LocationSearch() {
     setSearchQuery(displayName)
     setSuggestions([])
     setShowSuggestions(false)
+    router.push(`/location?place=${displayName}&lat=${location.latitude}&long=${location.longitude}`)
   }
 
   return (

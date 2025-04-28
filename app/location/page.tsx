@@ -1,27 +1,22 @@
-import LocationSearch from "@/components/location-search"
-import ForecastChart from "@/components/forecast-chart"
-import SavedLocations from "@/components/saved-locations"
-import DailyTip from "@/components/daily-tip"
-import LocationWeatherAirQualityDisplay from "@/components/location-weather-air-quality-display"
-  
-export default function Home() {
+"use client"
+
+import { Cloud, Droplets, Info, Leaf, MapPin, Settings, Shield, Wind } from "lucide-react"
+
+import { useState } from "react"
+import Banner from "@/components/banner"
+import { useSearchParams } from "next/navigation"
+
+export default function AboutPage() {
+  const params = useSearchParams()
+  const latitude = params.get("lat")
+  const longitude = params.get("long")
+  const place = params.get("place")    
+
   return (
-    <>
-      <main className="min-h-screen bg-background p-4 md:p-8 pb-16">
-        <div className="container mx-auto max-w-6xl space-y-6 md:space-y-8">
-          <h1 className="text-2xl font-bold text-foreground md:text-3xl">Weather & Air Quality</h1>
+    <div className="min-h-screen bg-background">
+      <Banner title={place!} />
 
-          <LocationSearch />
-
-          <DailyTip />
-
-          <LocationWeatherAirQualityDisplay />
-
-          <ForecastChart />
-          <SavedLocations />
-        </div>
-      </main>
-    </>
+    
+    </div>
   )
 }
-
