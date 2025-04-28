@@ -31,11 +31,11 @@ interface LocationWeatherProps {
 export default function LocationWeather({ locationData, fetchingLocationData }: LocationWeatherProps) {
   const [temperatureUnit, setTemperatureUnit] = useState<string>()
 
-  const {currentData: weatherData, isLoadinCurrentData, fetchCurrentData} = useWeatherStore()
+  const {currentData: weatherData, isLoadingCurrentData, fetchCurrentData} = useWeatherStore()
 
   useEffect(() => {
     if (locationData) {
-      if (!locationData.latitude || !locationData.latitude) return;
+      if (!locationData.latitude || !locationData.latitude || !locationData.display_name) return;
       fetchCurrentData(locationData.latitude, locationData.longitude)
     }
     setTemperatureUnit(localStorage.getItem('temperature-unit') || "C")
@@ -65,7 +65,7 @@ export default function LocationWeather({ locationData, fetchingLocationData }: 
   }
 
 
-  if (fetchingLocationData || isLoadinCurrentData || !weatherData) {
+  if (fetchingLocationData || isLoadingCurrentData || !weatherData) {
     return (
 
       <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm animate-pulse">

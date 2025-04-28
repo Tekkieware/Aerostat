@@ -114,7 +114,7 @@ export function getAqiRecommendation(aqi: number) {
 export const getAirQuality = async (locationData: StoredLocationInfo) => {
   try {
     const res = await fetch(
-      `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${locationData.latitude}&longitude=${locationData.longitude}&current=european_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone`
+      `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${locationData.latitude.toFixed(2)}&longitude=${locationData.longitude.toFixed(2)}&current=european_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone`
     )
     const json: AirQualityData = await res.json()
 

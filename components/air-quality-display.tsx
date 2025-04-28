@@ -29,7 +29,7 @@ export default function AirQualityDisplay({ locationData, fetchingLocationData }
 
  
 
-  if (isLoading || isLoading || !airQualityData) {
+  if (isLoading || fetchingLocationData || isLoading || !airQualityData) {
     return (
       <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm animate-pulse">
         <div className="h-7 w-1/3 bg-muted rounded-md mb-4 md:mb-6"></div>
