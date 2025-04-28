@@ -14,6 +14,7 @@ type StoredLocationInfo = {
 
 export default function SavedLocations() {
   const [savedLocations, setSavedLocations] = useState<StoredLocationInfo[]>([]);
+  const [isDeletedMessageVisible, setIsDeletedMessageVisible] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("stored-locations");
@@ -29,13 +30,24 @@ export default function SavedLocations() {
     );
     setSavedLocations(updated);
     localStorage.setItem("stored-locations", JSON.stringify(updated));
+    setIsDeletedMessageVisible(true);
+
+    setTimeout(() => {
+      setIsDeletedMessageVisible(false);
+    }, 3000);
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+       <div className="flex items-center justify-between">
         <h2 className="text-xl font-medium text-foreground">Saved Locations</h2>
       </div>
+       {isDeletedMessageVisible && (
+        <div className="flex items-center gap-1 w-full justify-center py-2 rounded-sm border-2 border-red-500 text-red-500">
+          <Trash2 color="#ef4444" />
+          <p className="font-bold text-sm text-red-500">Location deleted</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {savedLocations.map((location, index) => (
@@ -46,7 +58,7 @@ export default function SavedLocations() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                e.preventDefault(); 
+                e.preventDefault();
                 handleDelete(location.latitude, location.longitude);
               }}
               className="absolute top-2 right-2 text-red-500 hover:text-red-700"
@@ -66,7 +78,7 @@ export default function SavedLocations() {
                     </p>
                   </div>
                   <div className="text-right">
-                    {/* Put additional info here later */}
+                    {/* Add additional info here later */}
                   </div>
                 </div>
               </CardContent>

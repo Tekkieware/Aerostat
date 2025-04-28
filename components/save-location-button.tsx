@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
-import { Plus } from 'lucide-react';
+import { CheckCircle, Plus } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { StoredLocationInfo } from '@/lib/types';
 
@@ -24,7 +24,7 @@ const SaveLocationButton = () => {
       const saved = isLocationSaved(locationData.latitude, locationData.longitude);
       setIsSaved(saved);
     }
-  }, [latitude, longitude]);
+  }, [latitude, longitude, isSaved]);
   const handleSave = () => {
     if (!latitude || !longitude || !place) {
       console.error("Missing location data");
@@ -50,6 +50,7 @@ const SaveLocationButton = () => {
     localStorage.setItem("stored-locations", JSON.stringify(locations));
   
     console.log("Location saved:", locationData);
+    setIsSaved(true)
   };
 
   function isLocationSaved(latitude: number, longitude: number): boolean {
@@ -64,15 +65,24 @@ const SaveLocationButton = () => {
     );
   }
 
-  if (isSaved) return null;
   
   return (
+    <>
+    {isSaved ? 
+      <div className="flex items-center gap-1 w-full justify-center py-5 rounded-sm border-2 border-green-700 text-green-700">
+        <CheckCircle color='#15803d' />
+      <p className=' font-bold text-sm text-green-700'>Saved location</p>
+      </div>
+    :
+
     <div className="flex w-full justify-end">
       <Button variant="outline" size="sm" onClick={handleSave}>
         <Plus className="h-4 w-4 mr-2" />
         Save Location
       </Button>
     </div>
+    }
+    </>
   );
 };
 
