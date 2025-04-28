@@ -75,9 +75,7 @@ export type Location = {
   
 
   export type StoredLocationInfo = {
-    city: string
-    country: string
-    state: string
+    display_name: string
     latitude: number
     longitude: number
   }

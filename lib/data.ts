@@ -45,11 +45,10 @@ export async function getCurrentLocationDetails(): Promise<StoredLocationInfo> {
             `https://nominatim.openstreetmap.org/reverse?lat=${coords.latitude}&lon=${coords.longitude}&format=json`
           )
           const data = await res.json()
+          console.log("DATA", data)
 
           const location: StoredLocationInfo = {
-            city: data.address.city || data.address.town || data.address.village || "",
-            state: data.address.state || "",
-            country: data.address.country,
+            display_name:data.display_name,
             latitude: coords.latitude,
             longitude: coords.longitude,
           }
@@ -60,7 +59,12 @@ export async function getCurrentLocationDetails(): Promise<StoredLocationInfo> {
           reject("Reverse geocoding failed.")
         }
       },
-      (err) => reject("Location access denied or unavailable.")
+      (err) => reject("Location access denied or unavailable."),
+      {
+        enableHighAccuracy: true, 
+        timeout: 5000,
+        maximumAge: 0
+      }
     )
   })
 }

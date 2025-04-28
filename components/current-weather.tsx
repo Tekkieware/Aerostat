@@ -99,7 +99,7 @@ export default function CurrentWeather({ locationData, fetchingLocationData }: C
 
   return (
     <div className="rounded-xl bg-card p-4 md:p-6 shadow-sm">
-      {locationData && <h2 className="text-xl font-medium text-foreground mb-4 md:mb-6">{locationData?.city}, {locationData?.state}, {locationData?.country}.</h2>}
+      {locationData && <h2 className="text-xl font-medium text-foreground mb-4 md:mb-6">{locationData?.display_name}</h2>}
 
       <div className="flex items-center mb-3 md:mb-4 justify-between">
         <div className="text-4xl md:text-5xl font-bold text-foreground">{temperature.toFixed(1)}°{temperatureUnit}</div>
