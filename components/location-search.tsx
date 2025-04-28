@@ -120,9 +120,6 @@ export default function LocationSearch() {
             disabled={loading}
           />
         </div>
-        <Button type="submit" className="sm:w-auto" disabled={loading}>
-          Search
-        </Button>
       </div>
 
       {showSuggestions && suggestions.length > 0 && (
