@@ -123,6 +123,9 @@ export type Location = {
 
   export type weatherState = {
     locationData?: WeatherData;
+    currentData?: WeatherData;
     isLoadingLocationData: boolean;
+    isLoadinCurrentData: boolean;
     fetchLocationData: (latitude: number, longitude: number)=> Promise<void>;
+    fetchCurrentData: (latitude: number, longitude: number)=> Promise<void>;
   };
