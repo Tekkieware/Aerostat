@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react"; // Import trash icon
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
@@ -23,6 +23,14 @@ export default function SavedLocations() {
     }
   }, []);
 
+  const handleDelete = (latitude: number, longitude: number) => {
+    const updated = savedLocations.filter(
+      (loc) => loc.latitude !== latitude || loc.longitude !== longitude
+    );
+    setSavedLocations(updated);
+    localStorage.setItem("stored-locations", JSON.stringify(updated));
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -31,11 +39,24 @@ export default function SavedLocations() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
         {savedLocations.map((location, index) => (
-          <Link
-            href={`/location?place=${location.display_name}&lat=${location.latitude}&long=${location.longitude}`}
+          <Card
             key={`${location.latitude}-${location.longitude}-${index}`}
+            className="relative hover:bg-muted/50 transition-colors"
           >
-            <Card className="cursor-pointer hover:bg-muted/50 transition-colors">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault(); 
+                handleDelete(location.latitude, location.longitude);
+              }}
+              className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+            >
+              <Trash2 size={18} />
+            </button>
+            <Link
+              href={`/location?place=${location.display_name}&lat=${location.latitude}&long=${location.longitude}`}
+              className="block"
+            >
               <CardContent className="p-3 md:p-4">
                 <div className="flex justify-between">
                   <div>
@@ -45,12 +66,12 @@ export default function SavedLocations() {
                     </p>
                   </div>
                   <div className="text-right">
-                    {/* Put more info here later */}
+                    {/* Put additional info here later */}
                   </div>
                 </div>
               </CardContent>
-            </Card>
-          </Link>
+            </Link>
+          </Card>
         ))}
       </div>
     </div>
