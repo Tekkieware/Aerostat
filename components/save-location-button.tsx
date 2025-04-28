@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from './ui/button';
 import { Plus } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
@@ -17,6 +17,14 @@ const SaveLocationButton = () => {
     display_name: place!,
   };
 
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    if (!isNaN(locationData.latitude) && !isNaN(locationData.longitude)) {
+      const saved = isLocationSaved(locationData.latitude, locationData.longitude);
+      setIsSaved(saved);
+    }
+  }, [latitude, longitude]);
   const handleSave = () => {
     if (!latitude || !longitude || !place) {
       console.error("Missing location data");
@@ -43,6 +51,20 @@ const SaveLocationButton = () => {
   
     console.log("Location saved:", locationData);
   };
+
+  function isLocationSaved(latitude: number, longitude: number): boolean {
+    if (typeof window === "undefined") return false;
+    const stored = localStorage.getItem("stored-locations");
+    if (!stored) return false;
+  
+    const savedLocations = JSON.parse(stored) as { latitude: number; longitude: number }[];
+  
+    return savedLocations.some(
+      (loc) => loc.latitude === latitude && loc.longitude === longitude
+    );
+  }
+
+  if (isSaved) return null;
   
   return (
     <div className="flex w-full justify-end">
