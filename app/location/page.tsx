@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { Card } from "@/components/ui/card"
 import LocationDailyTip from "@/components/location-daily-tip"
 import CurrentWeatherAirQualityDisplay from "@/components/current-weather-air-quality-display"
+import CurrentForecastChart from "@/components/current-forecast-chart"
 
 export default function AboutPage() {
   const params = useSearchParams()
@@ -32,6 +33,7 @@ export default function AboutPage() {
           <Card className="border-none shadow-lg p-5 flex flex-col gap-5">
            <LocationDailyTip/>
            <CurrentWeatherAirQualityDisplay />
+           <CurrentForecastChart />
           </Card>
         </motion.div>
       </main>
