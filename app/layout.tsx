@@ -13,10 +13,10 @@ const roboto = Roboto({
 })
 
 export const metadata: Metadata = {
-  title: "Weather & Air Quality App",
-  description: "Monitor weather conditions and air quality for your location",
-    generator: 'v0.dev'
-}
+  title: "Live Weather Forecast & Air Quality Tracker | Accurate Local Updates",
+  description:
+    "Stay informed with real-time weather forecasts, detailed climate conditions, and accurate air quality index (AQI) data for your location. Track temperature, humidity, wind, and pollution levels with our reliable weather and AQI app.",
+};
 
 export default function RootLayout({
   children,
