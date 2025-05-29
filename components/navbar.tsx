@@ -2,11 +2,12 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Settings, Info, Menu, X } from "lucide-react"
+import { Home, Settings, Info, Menu, X, Sun } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { cn } from "@/lib/utils"
+import { WiDaySunny } from "react-icons/wi"
 
 export function Navbar() {
   const pathname = usePathname()
@@ -42,9 +43,10 @@ export function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link href="/" className="font-bold text-xl text-foreground">
-          Aerostat
+        <div className="">
+          <Link href="/" className="font-bold text-xl text-primary flex items-center gap-1">
+            <WiDaySunny size={30} className="text-yellow-400 text-2xl animate-pulse" />
+            Aerostat
           </Link>
         </div>
 
