@@ -6,7 +6,7 @@ import { useWeatherStore } from "@/lib/store/useWeatherStore"
 import { getCurrentUVIndex, getUVRiskLevel } from "@/lib/utils"
 
 export default function LocationDailyTip() {
-  const {isLoadingCurrentData, currentData: locationData} = useWeatherStore()
+  const { isLoadingCurrentData, currentData: locationData } = useWeatherStore()
 
   if (isLoadingCurrentData || !locationData) {
     return (
@@ -28,8 +28,8 @@ export default function LocationDailyTip() {
     <Card className="bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800">
       <CardContent className="p-4">
         <div className="flex gap-3">
-        <Lightbulb className="h-6 w-6" color={dailyTip?.color} />
-          <p style={{color: dailyTip?.color}} className="text-sm">{dailyTip?.advice}</p>
+          <Lightbulb className="h-6 w-6" color={dailyTip?.color} />
+          <p style={{ color: dailyTip?.color }} className="text-sm">{dailyTip?.advice}</p>
         </div>
       </CardContent>
     </Card>

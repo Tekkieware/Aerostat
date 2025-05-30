@@ -54,14 +54,14 @@ export const getProgressColor = (aqi: number) => {
 export const uvIndexMap: UVLevel[] = [
   {
     min: 0,
-    max: 2.9,
+    max: 2.99,
     risk: "Low",
     color: "#2ECC71",
     advice: "With low UV levels today, you can safely enjoy being outside!",
   },
   {
     min: 3,
-    max: 5.9,
+    max: 5.99,
     risk: "Moderate",
     color: "#F1C40F",
     advice:
@@ -69,7 +69,7 @@ export const uvIndexMap: UVLevel[] = [
   },
   {
     min: 6,
-    max: 7.9,
+    max: 7.99,
     risk: "High",
     color: "#E67E22",
     advice:
@@ -77,7 +77,7 @@ export const uvIndexMap: UVLevel[] = [
   },
   {
     min: 8,
-    max: 10.9,
+    max: 10.99,
     risk: "Very High",
     color: "#E74C3C",
     advice:
@@ -170,7 +170,7 @@ export const formatToLocalHour = (isoString: string, offsetSeconds: number) => {
   const date = new Date(isoString)
 
   console.log('Original UTC Date:', date)  // Log the UTC date
-  
+
   // Use the UTC offset from the location data if available, else use the browser's local time
   const localOffset = offsetSeconds || new Date().getTimezoneOffset() * 60; // Get local timezone offset in seconds
 
