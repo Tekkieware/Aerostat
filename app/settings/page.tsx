@@ -1,5 +1,5 @@
 "use client"
-import { Settings, Settings2} from "lucide-react"
+import { Settings, Settings2 } from "lucide-react"
 import { motion } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import Banner from "@/components/banner"
@@ -12,7 +12,7 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-background">
       <Banner title="Settings" />
 
-      <main className="container mx-auto -mt-5 md:-mt-10 px-4 pb-16 relative">
+      <main className="sm:container mx-auto -mt-5 md:-mt-10 px-4 pb-16 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

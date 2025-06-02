@@ -26,7 +26,7 @@ export default function AboutPage() {
         <div className="min-h-screen bg-background">
             <Banner title={place!} />
 
-            <main className="container mx-auto -mt-5 px-4 pb-16 relative">
+            <main className="sm:container mx-auto -mt-5 px-4 pb-16 relative">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
